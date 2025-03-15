@@ -1,3 +1,5 @@
+
+
 resource "azurerm_virtual_machine" "main" {
   count                 = var.vm_count
   name                  = "${var.prefix}-vm-${count.index}"
