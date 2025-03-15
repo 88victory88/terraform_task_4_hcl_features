@@ -1,11 +1,9 @@
-
-
 resource "azurerm_virtual_machine" "main" {
-  count                 = var.vm_count
-  name                  = "${var.prefix}-vm-${count.index}"
+  for_each              = var.vm_names
+  name                  = each.value
   location              = azurerm_resource_group.example.location
   resource_group_name   = azurerm_resource_group.example.name
-  network_interface_ids = [azurerm_network_interface.main[count.index].id]
+  network_interface_ids = [azurerm_network_interface.main[each.key].id]
   vm_size               = "Standard_DS1_v2"
 
   storage_image_reference {
@@ -16,14 +14,14 @@ resource "azurerm_virtual_machine" "main" {
   }
 
   storage_os_disk {
-    name              = "myosdisk-${count.index}"
+    name              = "myosdisk-${each.key}"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
   }
 
   os_profile {
-    computer_name  = "hostname-${count.index}"
+    computer_name  = "hostname-${each.key}"
     admin_username = "testadmin"
     admin_password = "Password1234!"
   }

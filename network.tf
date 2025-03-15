@@ -16,13 +16,13 @@ locals {
 }
 
 resource "azurerm_network_interface" "main" {
-  count               = var.vm_count
-  name                = "${var.prefix}-nic-${count.index}"
+  for_each            = var.vm_names
+  name                = "${each.value}-nic"
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
 
   ip_configuration {
-    name                          = "testconfiguration-${count.index}"
+    name                          = "testconfiguration-${each.key}"
     subnet_id                     = azurerm_subnet.internal.id
     private_ip_address_allocation = "Dynamic"
   }
